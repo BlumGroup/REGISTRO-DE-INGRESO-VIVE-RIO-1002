@@ -218,6 +218,25 @@
       <button type="button" class="add-btn" id="add-acompanante">+ Agregar acompañante</button>
     </div>
 
+    <div class="section-title">Vehículo</div>
+    <div class="card">
+      <div class="card-title"><span class="dot"></span>¿Vienes en vehículo?</div>
+      <div class="consent-check" style="margin-top:0;">
+        <input type="checkbox" id="f-tiene-vehiculo">
+        <label for="f-tiene-vehiculo">Sí, voy a ingresar con vehículo</label>
+      </div>
+      <div id="vehiculo-fields" style="display:none; margin-top:14px;">
+        <div class="field">
+          <label>Placa</label>
+          <input type="text" id="f-placa" style="text-transform:uppercase;">
+        </div>
+        <div class="field">
+          <label>Marca y color</label>
+          <input type="text" id="f-vehiculo-detalle">
+        </div>
+      </div>
+    </div>
+
     <div class="section-title">Autorización</div>
     <div class="card">
       <div class="consent-box">
@@ -513,6 +532,11 @@ function removeAcompanante(id){
 }
 document.getElementById('add-acompanante').addEventListener('click', addAcompanante);
 
+/* ---------- toggle de vehículo ---------- */
+document.getElementById('f-tiene-vehiculo').addEventListener('change', function(){
+  document.getElementById('vehiculo-fields').style.display = this.checked ? 'block' : 'none';
+});
+
 /* ---------- validación ---------- */
 function validate(){
   const principalOk = document.getElementById('f-nombre').value.trim() !== '' &&
@@ -522,6 +546,10 @@ function validate(){
          document.getElementById('f-consentimiento').checked;
 
   if(!principalOk) return false;
+
+  if(document.getElementById('f-tiene-vehiculo').checked){
+    if(document.getElementById('f-placa').value.trim() === '') return false;
+  }
 
   const blocks = document.querySelectorAll('.acompanante-block');
   for(const b of blocks){
@@ -598,6 +626,10 @@ document.getElementById('submit-email').addEventListener('click', async () => {
       telefono: document.getElementById('f-telefono').value,
       docFrente: docFrenteB64,
       docReverso: docReversoB64,
+      vehiculo: document.getElementById('f-tiene-vehiculo').checked ? {
+        placa: document.getElementById('f-placa').value,
+        detalle: document.getElementById('f-vehiculo-detalle').value
+      } : null,
       acompanantes: acompanantes
     };
 
